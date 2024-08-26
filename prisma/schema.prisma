@@ -1,0 +1,867 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  User
+  Admin
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?   @unique
+  contactNo String?   @unique
+  emailVerified DateTime?
+  image         String?
+  firstName      String?
+  lastName       String?
+  password  String?
+  Session       Session[]
+  Account       Account?
+  verificationToken VerificationToken?
+  role Role @default(User)
+  userDetail UserDetail?  
+  userDetailId String?  
+  customer Customer?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String  @unique
+  type                     String
+  provider                 String @unique
+  providerAccountId        String @unique
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User?   @relation(fields: [userId], references: [id])
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  // @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+ 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  @@index([userId])
+}
+ 
+model VerificationToken {
+  id           String   @id @default(cuid())
+  user  User @relation(fields: [userId], references: [id])
+  userId  String @unique
+  token      String @unique
+  expires    DateTime
+ 
+  // @@unique([id, token])
+}
+
+model UserDetail {
+  id        String   @id @default(cuid())  
+  userId    String  @unique 
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String
+  user    User  @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Token {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserLogin {
+  id        String   @id @default(cuid())
+  userId    String
+  loginTime DateTime
+  logoutTime DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  activity  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  companyName String? 
+  balanceType String?
+  openingBalance Float? @default(0) 
+  gstin     String?
+  pan       String?
+  email     String?   @unique
+  contactNo String   @unique
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String
+  user   User?  @relation(fields: [userId], references: [id])
+  userId String? @unique
+  orders SalesOrder[]
+  receipts Receipt[]
+  receivables Receivable[]
+  salesInvoices SalesInvoice[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vendor {
+  id        String   @id @default(cuid())
+  name      String
+  companyName String?  
+  balanceType String?
+  openingBalance Float? @default(0)  
+  gstin     String?
+  pan       String?
+  email     String?   @unique
+  contactNo String   @unique
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String  
+  vendorBankDetail VendorBankDetail[]
+  purchaseOrders PurchaseOrder[]
+  purchaseInvoices PurchaseInvoice[]
+  payments Payment[]
+  payables Payable[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VendorBankDetail{
+  id        String   @id @default(cuid())
+  vendor  Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String
+  bankName String
+  accountNo String
+  ifscCode String
+  branchName String
+  accountType String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+ 
+model SalesOrder {
+  id        String   @id @default(cuid())
+  orderNo   String   @unique
+  customer  Customer  @relation(fields: [customerId], references: [id])
+  customerId String
+  orderDate DateTime 
+  orderItems SalesOrderItem[]
+  salesInvoice SalesInvoice?
+  orderGrossAmount Float
+  orderTotalAmount Float
+  orderStatus SalesOrderStatus[]
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String @unique
+  deliveryNote DeliveryNote?
+  receipt Receipt[]
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String
+  paymentStatus PaymentStatusEnum @default(PENDING)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+}
+
+model SalesInvoice {
+  id        String   @id @default(cuid())
+  invoiceNo   String   @unique
+  salesOrder  SalesOrder?  @relation(fields: [salesOrderId], references: [id])
+  salesOrderId String? @unique
+  customer Customer @relation(fields:[customerId], references: [id])
+  customerId String 
+  invoiceDate DateTime 
+  invoiceItems SalesInvoiceItem[]
+  invoiceGrossAmount Float
+  invoiceTotalAmount Float 
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String @unique
+  deliveryNote DeliveryNote?
+  receipt Receipt[]
+  receivable Receivable[]
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String 
+  paymentStatus PaymentStatusEnum @default(PENDING)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+enum PaymentStatusEnum {
+  PENDING
+  PAID
+  PARTIALLY_PAID
+  CANCELLED
+}
+
+// enum PaymentModeEnum {
+//   CASH
+//   CHEQUE
+//   NEFT
+//   RTGS
+//   IMPS
+//   UPI
+//   PAYTM
+//   PHONEPE
+//   GOOGLEPAY
+//   OTHERS
+// }
+
+model BillingAddress{
+  id        String   @id @default(cuid()) 
+  contactNo String
+  name  String   
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salesInvoice SalesInvoice?
+  salesorder SalesOrder?
+  deliveryNote DeliveryNote?
+  purchaseOrder PurchaseOrder?
+  receiptNote ReceiptNote?
+  purchaseInvoice PurchaseInvoice?
+
+
+}
+model ShippingAddress{
+  id        String   @id @default(cuid())
+  contactNo String
+  name  String   
+  address   String
+  city      String
+  state     String
+  country   String
+  pincode   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salesInvoice SalesInvoice[]
+  purchaseInvoice PurchaseInvoice?
+  salesorder SalesOrder?
+  deliveryNote DeliveryNote?
+  purchaseOrder PurchaseOrder?
+  receiptNote ReceiptNote?
+  
+
+}
+model SalesOrderItem {
+  id        String   @id @default(cuid())
+  order  SalesOrder  @relation(fields: [orderId], references: [id])
+  orderId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model SalesInvoiceItem {
+  id        String   @id @default(cuid())
+  invoice  SalesInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model SalesOrderStatus {
+  id        String   @id @default(cuid())
+  order  SalesOrder  @relation(fields: [orderId], references: [id])
+  orderId String
+  statusCode OrderStatusCode
+  statusDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+
+}
+
+model DeliveryNote {
+  id        String   @id @default(cuid())
+  challanNo   String   @unique
+  salesOrder  SalesOrder?  @relation(fields: [salesOrderId], references: [id])
+  salesOrderId String @unique
+  invoice  SalesInvoice?  @relation(fields: [invoiceId], references: [id])
+  invoiceId String @unique
+  challanDate DateTime 
+  challanItems DeliveryNoteItem[]
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String @unique
+  deliveryStatus DeliveryStatus[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model DeliveryNoteItem {
+  id        String   @id @default(cuid())
+  challan  DeliveryNote  @relation(fields: [challanId], references: [id])
+  challanId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model DeliveryStatus{
+  id        String   @id @default(cuid())
+  challan  DeliveryNote  @relation(fields: [challanId], references: [id])
+  challanId String
+  statusCode DeliveryChallanStatusCode
+  statusDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model PurchaseOrder {
+  id        String   @id @default(cuid())
+  orderNo   String   @unique
+  vendor  Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String
+  orderDate DateTime 
+  orderItems PurchaseOrderItem[]
+  purchaseInvoice PurchaseInvoice[]
+  orderGrossAmount Float
+  orderTotalAmount Float
+  orderStatus PurchaseOrderStatus[]
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String  @unique
+  receiptNote ReceiptNote?
+  paymentStatus PaymentStatusEnum @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String
+  payment Payment[]
+
+
+}
+model PurchaseOrderItem {
+  id        String   @id @default(cuid())
+  order  PurchaseOrder  @relation(fields: [orderId], references: [id])
+  orderId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model PurchaseInvoice {
+  id        String   @id @default(cuid())
+  invoiceNo   String   @unique
+  purchaseOrder  PurchaseOrder  @relation(fields: [purchaseOrderId], references: [id])
+  purchaseOrderId String 
+  vendor  Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String
+  invoiceDate DateTime 
+  invoiceItems PurchaseInvoiceItem[]
+  invoiceGrossAmount Float
+  invoiceTotalAmount Float 
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String @unique
+  receiptNote ReceiptNote?
+  purchaseStatus PurchaseInvoiceStatus[]
+  payment Payment[]
+  payable Payable[]
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String
+
+  paymentStatus PaymentStatusEnum @default(PENDING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+model PurchaseInvoiceItem {
+  id        String   @id @default(cuid())
+  invoice  PurchaseInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+model PurchaseOrderStatus {
+  id        String   @id @default(cuid())
+  order  PurchaseOrder  @relation(fields: [orderId], references: [id])
+  orderId String
+  statusCode OrderStatusCode
+  statusDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model PurchaseInvoiceStatus {
+  id        String   @id @default(cuid())
+  invoice  PurchaseInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  statusCode OrderStatusCode
+  statusDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+
+
+model ReceiptNote{
+  id        String   @id @default(cuid())
+  receiptNo   String   @unique
+  purchaseOrder  PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id])
+  purchaseOrderId String @unique
+  invoice  PurchaseInvoice?  @relation(fields: [invoiceId], references: [id])
+  invoiceId String @unique
+  receiptDate DateTime 
+  receiptItems ReceiptNoteItem[]
+  billingAddress BillingAddress @relation(fields: [billingAddressId], references: [id])
+  billingAddressId String @unique
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String @unique
+  receiptStatus ReceiptNoteStatus[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+model ReceiptNoteItem {
+  id        String   @id @default(cuid())
+  receipt  ReceiptNote  @relation(fields: [receiptId], references: [id])
+  receiptId String
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity Int
+  price    Float
+  discountAmount Float
+  taxAmount Float
+  subTotalAmount Float
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReceiptNoteStatus {
+  id        String   @id @default(cuid())
+  receipt  ReceiptNote  @relation(fields: [receiptId], references: [id])
+  receiptId String
+  statusCode ReceiptNoteStatusCode
+  statusDate DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+}
+
+model Receipt {
+  id        String   @id @default(cuid())
+  customer  Customer  @relation(fields: [customerId], references: [id])
+  customerId String
+  invoice  SalesInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String 
+  salesorder SalesOrder @relation(fields:[salesOrderId], references: [id])
+  salesOrderId String
+  amount Float
+  receiptDate DateTime    
+  referenceNo String?
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment{
+  id        String   @id @default(cuid())
+  vendor  Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String
+  invoice  PurchaseInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String 
+  purchaseOrder PurchaseOrder @relation(fields:[purchaseOrderId], references: [id])
+  purchaseOrderId String
+  amount Float
+  paymentMode PaymentMode  @relation(fields: [paymentModeId], references: [id])
+  paymentModeId String
+  paymentDate DateTime 
+  referenceNo String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Receivable{
+  id        String   @id @default(cuid())
+  customer  Customer  @relation(fields: [customerId], references: [id])
+  customerId String
+  invoice  SalesInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  amount Float
+  dueDate DateTime  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payable{
+  id        String   @id @default(cuid())
+  vendor  Vendor  @relation(fields: [vendorId], references: [id])
+  vendorId String
+  invoice  PurchaseInvoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId String
+  amount Float
+  dueDate DateTime  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentMode{
+  id        String   @id @default(cuid())
+  name      String   @unique
+  description String?
+  payments Payment[]
+  receipts Receipt[]
+  salesOrder SalesOrder[]
+  salesInvoice SalesInvoice[]
+  purchaseOrder PurchaseOrder[]
+  purchaseInvoice PurchaseInvoice[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  description String
+  modelNo   String
+  frequency  String
+  noOfStages String
+  grossWeight String
+  certification String
+  headMinimumM String
+  headMaximumM String
+  sealingType String
+  retailPrice     Float
+  normalPrice     Float
+  isTaxIncludedInPrice Boolean @default(false)
+  stockQuantity   Int @default(0)
+  isAvailable     Boolean @default(true)
+  minOrderQuantity Int @default(1)
+  hsnCode           String? 
+  series   ProductSeries  @relation(fields: [seriesId], references: [id]) 
+  seriesId String  
+  puTypeApp  PumpTypeApp  @relation(fields: [puTypeAppId], references: [id])
+  puTypeAppId String
+  puTypeInst PumpTypeInstallation @relation(fields: [puTypeInstId], references: [id])
+  puTypeInstId String
+  phase Phase @relation(fields: [phaseId], references: [id])
+  phaseId String
+  powerHP PowerInHP @relation(fields: [powerHPId], references: [id])
+  powerHPId String
+  powerKW  PowerInKW @relation(fields: [powerKWId], references: [id])
+  powerKWId String
+  suctionMM SuctionSizeINMM @relation(fields: [suctionMMId], references: [id])
+  suctionMMId String
+  deliveryMM DeliverySizeINMM @relation(fields: [deliveryMMId], references: [id])
+  deliveryMMId String
+  ratedVolt RatedVoltageINVolt @relation(fields: [ratedVoltId], references: [id])
+  ratedVoltId String
+
+  pOverview ProductOverview?
+  pImages ProductImage[]
+
+  productTax ProductTax? @relation(fields: [productTaxId], references: [id])
+  productTaxId String  
+  cessInPercent     Float? 
+
+  discount Discount? @relation(fields: [discountId], references: [id])
+  discountId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  salesOrders SalesOrderItem[]
+  salesInvoices SalesInvoiceItem[]
+  deliveryNote DeliveryNoteItem[]
+  receiptNote ReceiptNoteItem[]
+  purchaseOrders PurchaseOrderItem[]
+  purchaseInvoices PurchaseInvoiceItem[]
+}
+
+model ProductTax {
+  id        String   @id @default(cuid())
+  product  Product[]
+  taxName      String @unique  //  GST @ 18%, VAT, etc
+  taxInPercent      Float   
+  effectiveDate      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Discount {
+  id        String   @id @default(cuid())
+  product  Product[]
+  discountInPercent      Float? 
+  discountInAmount       Float?
+  discountStartDate      DateTime
+  discountEndDate        DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductSeries {
+  id        String   @id @default(cuid())
+  name      String
+  description String?
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PumpTypeApp {
+  id        String   @id @default(cuid())
+  name      String
+  description String?
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PumpTypeInstallation{
+  id        String   @id @default(cuid())
+  name      String
+  description String?
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Phase{
+  id        String   @id @default(cuid())
+  name      String
+  description String?
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model PowerInHP {
+  id        String   @id @default(cuid())
+  valueInHP     Float
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PowerInKW {
+  id        String   @id @default(cuid())
+  valueInKW     Float
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SuctionSizeINMM{
+  id        String   @id @default(cuid())
+  valueSuctionSize     Int
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model DeliverySizeINMM{
+  id        String   @id @default(cuid())
+  valueDeliverySize     Int
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RatedVoltageINVolt {
+  id        String   @id @default(cuid())
+  valueInVolt     Int
+  products Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductOverview {
+  id        String   @id @default(cuid())
+  product Product  @relation(fields: [productId], references: [id])
+  productId String @unique
+  overview  String
+  pOverViewTitle ProductOverviewTitle[]  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OverViewTitle {
+  id        String   @id @default(cuid())
+  title     String
+  description String?
+  pOverViewTitle ProductOverviewTitle[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductOverviewTitle { 
+  id        String   @id @default(cuid())
+  pOverView    ProductOverview  @relation(fields: [pOverViewId], references: [id])
+  pOverViewId    String   
+  OverViewTitle    OverViewTitle  @relation(fields: [OverViewTitleId], references: [id])
+  OverViewTitleId    String  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  product  Product  @relation(fields: [productId], references: [id])
+  productId String
+  imageUrl  String
+  isMain    Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+enum RoleEnum {
+  ADMIN
+  STAFF
+  CUSTOMER    
+  ONLINE_USER
+
+}
+
+enum OrderStatusCode {
+  PENDING
+  CONFIRMED 
+  INVOICED 
+  DISPATCHED
+  DELIVERED
+  RETURNED
+  PARTIALLY_RETURNED
+  CANCELLED
+}
+
+enum DeliveryChallanStatusCode {
+  PENDING
+  DISPATCHED
+  DELIVERED  
+}
+
+enum ReceiptNoteStatusCode {
+  PENDING
+  RECEIVED
+  CANCELLED  
+}
