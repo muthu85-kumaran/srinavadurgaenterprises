@@ -1,4 +1,4 @@
-import { listCustomerAction } from "@/actions/CustomerAction";
+import { listCustomerAction } from "@/actions/users/CustomerAction";
 import { listPaymentModeAction } from "@/actions/masters/PaymentModeAction";
 import { getAllStatesOfIndia } from "@/actions/countryAction";
 import { listProductAction } from "@/actions/products/productAction";

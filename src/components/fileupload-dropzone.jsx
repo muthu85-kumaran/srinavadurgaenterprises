@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
-import { UploadCloud, UploadCloudIcon, UploadIcon } from "lucide-react";
+import { UploadCloudIcon } from "lucide-react";
 
 const FileUpload = ({ productId }) => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -113,11 +113,13 @@ const FileUpload = ({ productId }) => {
       </div>
       <div className="flex  gap-3 flex-1 w-full ">
         {selectedImages.length > 0 &&
-          selectedImages.map((image, index) => (
-            <div className="flex flex-col justify-center items-center shadow-md border p-3">
+          selectedImages.map((image, idx) => (
+            <div
+              className="flex flex-col justify-center items-center shadow-md border p-3"
+              key={idx}
+            >
               <Image
                 src={`${URL.createObjectURL(image.file)}`}
-                key={index}
                 alt=""
                 width="100"
                 height="100"

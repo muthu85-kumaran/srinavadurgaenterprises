@@ -9,15 +9,15 @@ import {
   encrypt,
 } from "@/lib/utils";
 import { price_in_words } from "@/lib/currencytoword";
-import { GetSalesOrder } from "@/actions/sales/SalesOrderAction";
+import { SalesOrder } from "@/actions/sales/SalesOrderAction";
 import { PrinterIcon } from "lucide-react";
 import { useCompanyInfo } from "@/hooks/companyinfo";
 import CompanyInfo from "../../_components/companyinfo";
 
 interface ViewOrderProps {
-  sales: GetSalesOrder;
+  sales: SalesOrder;
 }
-function taxdisplay(sales: GetSalesOrder) {
+function taxdisplay(sales: SalesOrder) {
   var result = [];
   for (let index = 0; index < sales.orderItems.length; index++) {
     const currenttax = sales.orderItems[index].product.productTax?.taxInPercent;

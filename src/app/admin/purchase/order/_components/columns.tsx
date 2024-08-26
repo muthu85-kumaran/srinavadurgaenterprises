@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { LucideEdit2 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { PurchaseOrder } from "@/actions/purchaseOrderAction";
+import { PurchaseOrder } from "@/actions/purchase/purchaseOrderAction";
 import { getFormattedCurrency, getFormattedDateTime } from "@/lib/utils";
 import {
   Table,

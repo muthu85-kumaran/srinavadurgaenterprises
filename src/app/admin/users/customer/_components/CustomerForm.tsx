@@ -36,7 +36,7 @@ import { TriangleAlertIcon } from "lucide-react";
 import { FaRegSquareCheck } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { SaveCustomerAction } from "@/actions/CustomerAction";
+import { SaveCustomerAction } from "@/actions/users/CustomerAction";
 import { cn, getErrorMessage } from "@/lib/utils";
 import { CustomerSchema } from "@/types/Customer";
 import { Customer } from "@prisma/client";

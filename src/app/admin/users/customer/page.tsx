@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { PlusSquareIcon } from "lucide-react";
 import Breadcrumbs from "@/app/admin/_components/Breadcrumbs";
-import { listCustomerAction } from "@/actions/CustomerAction";
+import { listCustomerAction } from "@/actions/users/CustomerAction";
 import toast from "react-hot-toast";
 import Loading from "@/app/admin/_components/loading";
 import { Customer } from "@/types/Customer";

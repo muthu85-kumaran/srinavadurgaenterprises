@@ -42,10 +42,11 @@ const PhaseForm = ({ phase }: PhaseFormProps) => {
       id: phase?.id || undefined,
     },
   });
+
   const action = async (params: FormData) => {
     const results = await addPhaseAction(params);
-    if ((results?.errors?.length ?? 0) > 0) {
-      return { errors: results?.errors ? results.errors : [] };
+    if ((results?.error?.length ?? 0) > 0) {
+      return { errors: results?.error ? results.error : [] };
     }
     return { errors: [] };
   };

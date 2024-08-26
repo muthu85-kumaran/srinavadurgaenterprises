@@ -49,7 +49,7 @@ export const SaveCustomerAction = async (newCustomer: Customer) => {
             city: data.city,
             state: data.state,
             pincode: data.pincode,
-            country: data.country,
+            country: data.country || "IN",
             userId: data.userId,
           },
         });

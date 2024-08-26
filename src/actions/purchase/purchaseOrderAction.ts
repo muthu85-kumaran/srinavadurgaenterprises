@@ -207,11 +207,11 @@ export const listPurchaseOrderPendingAction = async () => {
   var error: unknown | string | ZodIssue[];
   try {
     const data = await db.purchaseOrder.findMany({
-      where: {
-        purchaseInvoice: {
-          is: null,
-        },
-      },
+      // where: {
+      //   purchaseInvoice: {
+      //     is: null,
+      //   },
+      // },
       relationLoadStrategy: "join",
       include: PurchaseOrderInclude,
     });

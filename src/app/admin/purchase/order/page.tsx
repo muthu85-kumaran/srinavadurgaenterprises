@@ -5,7 +5,7 @@ import Breadcrumbs from "@/app/admin/_components/Breadcrumbs";
 import {
   listPurchaseOrderAction,
   PurchaseOrder,
-} from "@/actions/purchaseOrderAction";
+} from "@/actions/purchase/purchaseOrderAction";
 import toast from "react-hot-toast";
 import Loading from "@/app/admin/_components/loading";
 import ListDataTable from "@/components/listdatatable";

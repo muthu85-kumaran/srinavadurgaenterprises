@@ -8,7 +8,7 @@ const ForbiddenPage = () => {
       <div className="base bg-gray-300 p-2 ">
         <h1>403</h1>
         <h2>Access Forbidden</h2>
-        <h5>i'm sorry buddy</h5>
+        <h5>i am sorry buddy</h5>
       </div>
     </Link>
   );
