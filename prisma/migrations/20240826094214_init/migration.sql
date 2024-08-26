@@ -1,67 +1,210 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `User` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NULL,
+    `contactNo` VARCHAR(191) NULL,
+    `emailVerified` DATETIME(3) NULL,
+    `image` VARCHAR(191) NULL,
+    `firstName` VARCHAR(191) NULL,
+    `lastName` VARCHAR(191) NULL,
+    `password` VARCHAR(191) NULL,
+    `role` ENUM('User', 'Admin') NOT NULL DEFAULT 'User',
+    `userDetailId` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
-  - You are about to drop the `order` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `orderitem` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `orderstatus` table. If the table is not empty, all the data it contains will be lost.
+    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_contactNo_key`(`contactNo`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-*/
--- DropIndex
-DROP INDEX `Product_deliveryMMId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `Account` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `type` VARCHAR(191) NOT NULL,
+    `provider` VARCHAR(191) NOT NULL,
+    `providerAccountId` VARCHAR(191) NOT NULL,
+    `refresh_token` TEXT NULL,
+    `access_token` TEXT NULL,
+    `expires_at` INTEGER NULL,
+    `token_type` VARCHAR(191) NULL,
+    `scope` VARCHAR(191) NULL,
+    `id_token` TEXT NULL,
+    `session_state` VARCHAR(191) NULL,
+    `refresh_token_expires_in` INTEGER NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `Product_discountId_fkey` ON `product`;
+    UNIQUE INDEX `Account_userId_key`(`userId`),
+    UNIQUE INDEX `Account_provider_key`(`provider`),
+    UNIQUE INDEX `Account_providerAccountId_key`(`providerAccountId`),
+    INDEX `Account_userId_idx`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `Product_phaseId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `Session` (
+    `id` VARCHAR(191) NOT NULL,
+    `sessionToken` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `expires` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `Product_powerHPId_fkey` ON `product`;
+    UNIQUE INDEX `Session_sessionToken_key`(`sessionToken`),
+    INDEX `Session_userId_idx`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `Product_powerKWId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `VerificationToken` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `expires` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `Product_productTaxId_fkey` ON `product`;
+    UNIQUE INDEX `VerificationToken_userId_key`(`userId`),
+    UNIQUE INDEX `VerificationToken_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `Product_puTypeAppId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `UserDetail` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
+    `pincode` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `Product_puTypeInstId_fkey` ON `product`;
+    UNIQUE INDEX `UserDetail_userId_key`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `Product_ratedVoltId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `Token` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `Product_seriesId_fkey` ON `product`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `Product_suctionMMId_fkey` ON `product`;
+-- CreateTable
+CREATE TABLE `PasswordReset` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `ProductOverviewTitle_OverViewTitleId_fkey` ON `productoverviewtitle`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `ProductOverviewTitle_pOverViewId_fkey` ON `productoverviewtitle`;
+-- CreateTable
+CREATE TABLE `Otp` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `otp` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `UserRole_roleId_fkey` ON `userrole`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropIndex
-DROP INDEX `UserRole_userId_fkey` ON `userrole`;
+-- CreateTable
+CREATE TABLE `UserLogin` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `loginTime` DATETIME(3) NOT NULL,
+    `logoutTime` DATETIME(3) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropIndex
-DROP INDEX `VendorBankDetail_vendorId_fkey` ON `vendorbankdetail`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropTable
-DROP TABLE `order`;
+-- CreateTable
+CREATE TABLE `UserActivity` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `activity` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
--- DropTable
-DROP TABLE `orderitem`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- DropTable
-DROP TABLE `orderstatus`;
+-- CreateTable
+CREATE TABLE `Customer` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `companyName` VARCHAR(191) NULL,
+    `balanceType` VARCHAR(191) NULL,
+    `openingBalance` DOUBLE NULL DEFAULT 0,
+    `gstin` VARCHAR(191) NULL,
+    `pan` VARCHAR(191) NULL,
+    `email` VARCHAR(191) NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
+    `pincode` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Customer_email_key`(`email`),
+    UNIQUE INDEX `Customer_contactNo_key`(`contactNo`),
+    UNIQUE INDEX `Customer_userId_key`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Vendor` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `companyName` VARCHAR(191) NULL,
+    `balanceType` VARCHAR(191) NULL,
+    `openingBalance` DOUBLE NULL DEFAULT 0,
+    `gstin` VARCHAR(191) NULL,
+    `pan` VARCHAR(191) NULL,
+    `email` VARCHAR(191) NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
+    `pincode` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Vendor_email_key`(`email`),
+    UNIQUE INDEX `Vendor_contactNo_key`(`contactNo`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `VendorBankDetail` (
+    `id` VARCHAR(191) NOT NULL,
+    `vendorId` VARCHAR(191) NOT NULL,
+    `bankName` VARCHAR(191) NOT NULL,
+    `accountNo` VARCHAR(191) NOT NULL,
+    `ifscCode` VARCHAR(191) NOT NULL,
+    `branchName` VARCHAR(191) NOT NULL,
+    `accountType` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `SalesOrder` (
@@ -73,10 +216,14 @@ CREATE TABLE `SalesOrder` (
     `orderTotalAmount` DOUBLE NOT NULL,
     `billingAddressId` VARCHAR(191) NOT NULL,
     `shippingAddressId` VARCHAR(191) NOT NULL,
+    `paymentModeId` VARCHAR(191) NOT NULL,
+    `paymentStatus` ENUM('PENDING', 'PAID', 'PARTIALLY_PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `SalesOrder_orderNo_key`(`orderNo`),
+    UNIQUE INDEX `SalesOrder_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `SalesOrder_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -84,23 +231,30 @@ CREATE TABLE `SalesOrder` (
 CREATE TABLE `SalesInvoice` (
     `id` VARCHAR(191) NOT NULL,
     `invoiceNo` VARCHAR(191) NOT NULL,
-    `salesOrderId` VARCHAR(191) NOT NULL,
+    `salesOrderId` VARCHAR(191) NULL,
+    `customerId` VARCHAR(191) NOT NULL,
     `invoiceDate` DATETIME(3) NOT NULL,
     `invoiceGrossAmount` DOUBLE NOT NULL,
     `invoiceTotalAmount` DOUBLE NOT NULL,
     `billingAddressId` VARCHAR(191) NOT NULL,
     `shippingAddressId` VARCHAR(191) NOT NULL,
+    `paymentModeId` VARCHAR(191) NOT NULL,
+    `paymentStatus` ENUM('PENDING', 'PAID', 'PARTIALLY_PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `SalesInvoice_invoiceNo_key`(`invoiceNo`),
     UNIQUE INDEX `SalesInvoice_salesOrderId_key`(`salesOrderId`),
+    UNIQUE INDEX `SalesInvoice_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `SalesInvoice_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `BillingAddress` (
     `id` VARCHAR(191) NOT NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
     `address` VARCHAR(191) NOT NULL,
     `city` VARCHAR(191) NOT NULL,
     `state` VARCHAR(191) NOT NULL,
@@ -115,6 +269,8 @@ CREATE TABLE `BillingAddress` (
 -- CreateTable
 CREATE TABLE `ShippingAddress` (
     `id` VARCHAR(191) NOT NULL,
+    `contactNo` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
     `address` VARCHAR(191) NOT NULL,
     `city` VARCHAR(191) NOT NULL,
     `state` VARCHAR(191) NOT NULL,
@@ -164,7 +320,7 @@ CREATE TABLE `SalesInvoiceItem` (
 CREATE TABLE `SalesOrderStatus` (
     `id` VARCHAR(191) NOT NULL,
     `orderId` VARCHAR(191) NOT NULL,
-    `statusCode` ENUM('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL,
+    `statusCode` ENUM('PENDING', 'CONFIRMED', 'INVOICED', 'DISPATCHED', 'DELIVERED', 'RETURNED', 'PARTIALLY_RETURNED', 'CANCELLED') NOT NULL,
     `statusDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -185,6 +341,10 @@ CREATE TABLE `DeliveryNote` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `DeliveryNote_challanNo_key`(`challanNo`),
+    UNIQUE INDEX `DeliveryNote_salesOrderId_key`(`salesOrderId`),
+    UNIQUE INDEX `DeliveryNote_invoiceId_key`(`invoiceId`),
+    UNIQUE INDEX `DeliveryNote_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `DeliveryNote_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -227,10 +387,14 @@ CREATE TABLE `PurchaseOrder` (
     `orderTotalAmount` DOUBLE NOT NULL,
     `billingAddressId` VARCHAR(191) NOT NULL,
     `shippingAddressId` VARCHAR(191) NOT NULL,
+    `paymentStatus` ENUM('PENDING', 'PAID', 'PARTIALLY_PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `paymentModeId` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `PurchaseOrder_orderNo_key`(`orderNo`),
+    UNIQUE INDEX `PurchaseOrder_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `PurchaseOrder_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -262,11 +426,14 @@ CREATE TABLE `PurchaseInvoice` (
     `invoiceTotalAmount` DOUBLE NOT NULL,
     `billingAddressId` VARCHAR(191) NOT NULL,
     `shippingAddressId` VARCHAR(191) NOT NULL,
+    `paymentModeId` VARCHAR(191) NOT NULL,
+    `paymentStatus` ENUM('PENDING', 'PAID', 'PARTIALLY_PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `PurchaseInvoice_invoiceNo_key`(`invoiceNo`),
-    UNIQUE INDEX `PurchaseInvoice_purchaseOrderId_key`(`purchaseOrderId`),
+    UNIQUE INDEX `PurchaseInvoice_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `PurchaseInvoice_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -291,7 +458,7 @@ CREATE TABLE `PurchaseInvoiceItem` (
 CREATE TABLE `PurchaseOrderStatus` (
     `id` VARCHAR(191) NOT NULL,
     `orderId` VARCHAR(191) NOT NULL,
-    `statusCode` ENUM('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL,
+    `statusCode` ENUM('PENDING', 'CONFIRMED', 'INVOICED', 'DISPATCHED', 'DELIVERED', 'RETURNED', 'PARTIALLY_RETURNED', 'CANCELLED') NOT NULL,
     `statusDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -303,7 +470,7 @@ CREATE TABLE `PurchaseOrderStatus` (
 CREATE TABLE `PurchaseInvoiceStatus` (
     `id` VARCHAR(191) NOT NULL,
     `invoiceId` VARCHAR(191) NOT NULL,
-    `statusCode` ENUM('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL,
+    `statusCode` ENUM('PENDING', 'CONFIRMED', 'INVOICED', 'DISPATCHED', 'DELIVERED', 'RETURNED', 'PARTIALLY_RETURNED', 'CANCELLED') NOT NULL,
     `statusDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -324,6 +491,10 @@ CREATE TABLE `ReceiptNote` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `ReceiptNote_receiptNo_key`(`receiptNo`),
+    UNIQUE INDEX `ReceiptNote_purchaseOrderId_key`(`purchaseOrderId`),
+    UNIQUE INDEX `ReceiptNote_invoiceId_key`(`invoiceId`),
+    UNIQUE INDEX `ReceiptNote_billingAddressId_key`(`billingAddressId`),
+    UNIQUE INDEX `ReceiptNote_shippingAddressId_key`(`shippingAddressId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -357,12 +528,14 @@ CREATE TABLE `ReceiptNoteStatus` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Payment` (
+CREATE TABLE `Receipt` (
     `id` VARCHAR(191) NOT NULL,
     `customerId` VARCHAR(191) NOT NULL,
     `invoiceId` VARCHAR(191) NOT NULL,
+    `salesOrderId` VARCHAR(191) NOT NULL,
     `amount` DOUBLE NOT NULL,
-    `paymentDate` DATETIME(3) NOT NULL,
+    `receiptDate` DATETIME(3) NOT NULL,
+    `referenceNo` VARCHAR(191) NULL,
     `paymentModeId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -371,13 +544,15 @@ CREATE TABLE `Payment` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Receipt` (
+CREATE TABLE `Payment` (
     `id` VARCHAR(191) NOT NULL,
     `vendorId` VARCHAR(191) NOT NULL,
     `invoiceId` VARCHAR(191) NOT NULL,
+    `purchaseOrderId` VARCHAR(191) NOT NULL,
     `amount` DOUBLE NOT NULL,
     `paymentModeId` VARCHAR(191) NOT NULL,
-    `receiptDate` DATETIME(3) NOT NULL,
+    `paymentDate` DATETIME(3) NOT NULL,
+    `referenceNo` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -422,14 +597,221 @@ CREATE TABLE `PaymentMode` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `Product` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NOT NULL,
+    `modelNo` VARCHAR(191) NOT NULL,
+    `frequency` VARCHAR(191) NOT NULL,
+    `noOfStages` VARCHAR(191) NOT NULL,
+    `grossWeight` VARCHAR(191) NOT NULL,
+    `certification` VARCHAR(191) NOT NULL,
+    `headMinimumM` VARCHAR(191) NOT NULL,
+    `headMaximumM` VARCHAR(191) NOT NULL,
+    `sealingType` VARCHAR(191) NOT NULL,
+    `retailPrice` DOUBLE NOT NULL,
+    `normalPrice` DOUBLE NOT NULL,
+    `isTaxIncludedInPrice` BOOLEAN NOT NULL DEFAULT false,
+    `stockQuantity` INTEGER NOT NULL DEFAULT 0,
+    `isAvailable` BOOLEAN NOT NULL DEFAULT true,
+    `minOrderQuantity` INTEGER NOT NULL DEFAULT 1,
+    `hsnCode` VARCHAR(191) NULL,
+    `seriesId` VARCHAR(191) NOT NULL,
+    `puTypeAppId` VARCHAR(191) NOT NULL,
+    `puTypeInstId` VARCHAR(191) NOT NULL,
+    `phaseId` VARCHAR(191) NOT NULL,
+    `powerHPId` VARCHAR(191) NOT NULL,
+    `powerKWId` VARCHAR(191) NOT NULL,
+    `suctionMMId` VARCHAR(191) NOT NULL,
+    `deliveryMMId` VARCHAR(191) NOT NULL,
+    `ratedVoltId` VARCHAR(191) NOT NULL,
+    `productTaxId` VARCHAR(191) NOT NULL,
+    `cessInPercent` DOUBLE NULL,
+    `discountId` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProductTax` (
+    `id` VARCHAR(191) NOT NULL,
+    `taxName` VARCHAR(191) NOT NULL,
+    `taxInPercent` DOUBLE NOT NULL,
+    `effectiveDate` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `ProductTax_taxName_key`(`taxName`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Discount` (
+    `id` VARCHAR(191) NOT NULL,
+    `discountInPercent` DOUBLE NULL,
+    `discountInAmount` DOUBLE NULL,
+    `discountStartDate` DATETIME(3) NOT NULL,
+    `discountEndDate` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProductSeries` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PumpTypeApp` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PumpTypeInstallation` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Phase` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PowerInHP` (
+    `id` VARCHAR(191) NOT NULL,
+    `valueInHP` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PowerInKW` (
+    `id` VARCHAR(191) NOT NULL,
+    `valueInKW` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `SuctionSizeINMM` (
+    `id` VARCHAR(191) NOT NULL,
+    `valueSuctionSize` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `DeliverySizeINMM` (
+    `id` VARCHAR(191) NOT NULL,
+    `valueDeliverySize` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `RatedVoltageINVolt` (
+    `id` VARCHAR(191) NOT NULL,
+    `valueInVolt` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProductOverview` (
+    `id` VARCHAR(191) NOT NULL,
+    `productId` VARCHAR(191) NOT NULL,
+    `overview` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `ProductOverview_productId_key`(`productId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `OverViewTitle` (
+    `id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProductOverviewTitle` (
+    `id` VARCHAR(191) NOT NULL,
+    `pOverViewId` VARCHAR(191) NOT NULL,
+    `OverViewTitleId` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ProductImage` (
+    `id` VARCHAR(191) NOT NULL,
+    `productId` VARCHAR(191) NOT NULL,
+    `imageUrl` VARCHAR(191) NOT NULL,
+    `isMain` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Account` ADD CONSTRAINT `Account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Session` ADD CONSTRAINT `Session_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `VerificationToken` ADD CONSTRAINT `VerificationToken_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
 -- AddForeignKey
 ALTER TABLE `UserDetail` ADD CONSTRAINT `UserDetail_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `UserRole` ADD CONSTRAINT `UserRole_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `UserRole` ADD CONSTRAINT `UserRole_roleId_fkey` FOREIGN KEY (`roleId`) REFERENCES `Role`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Customer` ADD CONSTRAINT `Customer_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -447,13 +829,22 @@ ALTER TABLE `SalesOrder` ADD CONSTRAINT `SalesOrder_billingAddressId_fkey` FOREI
 ALTER TABLE `SalesOrder` ADD CONSTRAINT `SalesOrder_shippingAddressId_fkey` FOREIGN KEY (`shippingAddressId`) REFERENCES `ShippingAddress`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_salesOrderId_fkey` FOREIGN KEY (`salesOrderId`) REFERENCES `SalesOrder`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `SalesOrder` ADD CONSTRAINT `SalesOrder_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_salesOrderId_fkey` FOREIGN KEY (`salesOrderId`) REFERENCES `SalesOrder`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_billingAddressId_fkey` FOREIGN KEY (`billingAddressId`) REFERENCES `BillingAddress`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_shippingAddressId_fkey` FOREIGN KEY (`shippingAddressId`) REFERENCES `ShippingAddress`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `SalesInvoice` ADD CONSTRAINT `SalesInvoice_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SalesOrderItem` ADD CONSTRAINT `SalesOrderItem_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `SalesOrder`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -501,6 +892,9 @@ ALTER TABLE `PurchaseOrder` ADD CONSTRAINT `PurchaseOrder_billingAddressId_fkey`
 ALTER TABLE `PurchaseOrder` ADD CONSTRAINT `PurchaseOrder_shippingAddressId_fkey` FOREIGN KEY (`shippingAddressId`) REFERENCES `ShippingAddress`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `PurchaseOrder` ADD CONSTRAINT `PurchaseOrder_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `PurchaseOrderItem` ADD CONSTRAINT `PurchaseOrderItem_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `PurchaseOrder`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -517,6 +911,9 @@ ALTER TABLE `PurchaseInvoice` ADD CONSTRAINT `PurchaseInvoice_billingAddressId_f
 
 -- AddForeignKey
 ALTER TABLE `PurchaseInvoice` ADD CONSTRAINT `PurchaseInvoice_shippingAddressId_fkey` FOREIGN KEY (`shippingAddressId`) REFERENCES `ShippingAddress`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PurchaseInvoice` ADD CONSTRAINT `PurchaseInvoice_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `PurchaseInvoiceItem` ADD CONSTRAINT `PurchaseInvoiceItem_invoiceId_fkey` FOREIGN KEY (`invoiceId`) REFERENCES `PurchaseInvoice`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -552,22 +949,28 @@ ALTER TABLE `ReceiptNoteItem` ADD CONSTRAINT `ReceiptNoteItem_productId_fkey` FO
 ALTER TABLE `ReceiptNoteStatus` ADD CONSTRAINT `ReceiptNoteStatus_receiptId_fkey` FOREIGN KEY (`receiptId`) REFERENCES `ReceiptNote`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Payment` ADD CONSTRAINT `Payment_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Payment` ADD CONSTRAINT `Payment_invoiceId_fkey` FOREIGN KEY (`invoiceId`) REFERENCES `SalesInvoice`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_invoiceId_fkey` FOREIGN KEY (`invoiceId`) REFERENCES `SalesInvoice`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Payment` ADD CONSTRAINT `Payment_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_vendorId_fkey` FOREIGN KEY (`vendorId`) REFERENCES `Vendor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_invoiceId_fkey` FOREIGN KEY (`invoiceId`) REFERENCES `PurchaseInvoice`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_salesOrderId_fkey` FOREIGN KEY (`salesOrderId`) REFERENCES `SalesOrder`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Receipt` ADD CONSTRAINT `Receipt_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Payment` ADD CONSTRAINT `Payment_vendorId_fkey` FOREIGN KEY (`vendorId`) REFERENCES `Vendor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Payment` ADD CONSTRAINT `Payment_invoiceId_fkey` FOREIGN KEY (`invoiceId`) REFERENCES `PurchaseInvoice`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Payment` ADD CONSTRAINT `Payment_purchaseOrderId_fkey` FOREIGN KEY (`purchaseOrderId`) REFERENCES `PurchaseOrder`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Payment` ADD CONSTRAINT `Payment_paymentModeId_fkey` FOREIGN KEY (`paymentModeId`) REFERENCES `PaymentMode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Receivable` ADD CONSTRAINT `Receivable_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
