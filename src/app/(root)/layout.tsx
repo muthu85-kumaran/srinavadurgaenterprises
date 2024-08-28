@@ -6,8 +6,9 @@ import { Suspense } from "react";
 import Loading from "../admin/loading";
 
 export const metadata: Metadata = {
-  title: "Kirloskar Pump",
-  description: "Kirloskar Pump",
+  title: "Sri Navadurga Enterprises",
+  description:
+    "Sri Navadurga Enterprises, Kirloskar pumps, submersible pumps water pumps",
 };
 
 export default function PublicLayout({

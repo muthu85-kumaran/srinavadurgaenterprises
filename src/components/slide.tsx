@@ -36,7 +36,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56 p-0 ">
-                <Image src={img1} alt="agriculture pumps" />
+                <Image
+                  src={img1}
+                  alt="agriculture pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -45,7 +51,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56  p-0">
-                <Image src={img2} alt="industrial pumps" />
+                <Image
+                  src={img2}
+                  alt="industrial pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -54,7 +66,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56  p-0">
-                <Image src={img3} alt="commercial pumps" />
+                <Image
+                  src={img3}
+                  alt="commercial pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -63,7 +81,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56  p-0">
-                <Image src={img4} alt="mini pumps" />
+                <Image
+                  src={img4}
+                  alt="mini pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -72,7 +96,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56  p-0">
-                <Image src={img5} alt="pressure boosting pumps" />
+                <Image
+                  src={img5}
+                  alt="pressure boosting pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -81,7 +111,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56 p-0">
-                <Image src={img6} alt="mono block pump" />
+                <Image
+                  src={img6}
+                  alt="mono block pump"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
@@ -90,7 +126,13 @@ const Slide = () => {
           <div className="p-1">
             <Card className="shadow-sm">
               <CardContent className="flex h-56 p-0">
-                <Image src={img7} alt="submersible pumps" />
+                <Image
+                  src={img7}
+                  alt="submersible pumps"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  quality={100}
+                />
               </CardContent>
             </Card>
           </div>
