@@ -56,7 +56,7 @@ const SignInForm = () => {
     }
 
     toast.success("You are signed In successfully");
-    fetch("http://localhost:3000/api/auth/session")
+    fetch(`${process.env.HOST}/api/auth/session`)
       .then((res) => res.json())
       .then((res) => {
         if (res.user.role === "Admin") {
